@@ -22,4 +22,4 @@ resource "google_storage_bucket" "raw" {
   depends_on = [google_project_service.storage]
 }
 
-# test ci/cd
+# test 2 ci/cd
