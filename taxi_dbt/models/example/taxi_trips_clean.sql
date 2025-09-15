@@ -10,3 +10,4 @@ select
   cast(trip_distance as float64) as trip_distance,
   timestamp_diff(timestamp(dropoff_datetime), timestamp(pickup_datetime), minute) as trip_minutes
 from src
+-- test
