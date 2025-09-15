@@ -23,3 +23,4 @@ resource "google_storage_bucket" "raw" {
 }
 
 # test 3 ci/cd
+# force CI trigger after merge
