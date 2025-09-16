@@ -1,4 +1,5 @@
 taxi_dbt:
+  target: ci
   outputs:
     ci:
       dataset: taxi_raw
@@ -10,4 +11,3 @@ taxi_dbt:
       project: astrafy-de-proj
       threads: 4
       type: bigquery
-  target: ci
