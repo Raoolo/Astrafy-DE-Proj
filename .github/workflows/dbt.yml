@@ -33,6 +33,27 @@ jobs:
         with:
           credentials_json: ${{ secrets.DBT_GCP_SA_KEY }}
 
+      - name: Write dbt SA key
+        run: |
+          echo '${{ secrets.DBT_GCP_SA_KEY }}' > $HOME/dbt-sa.json
+
+      - name: Create profiles.yml for CI
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << 'YAML'
+          taxi_dbt:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: service-account
+                keyfile: /home/runner/dbt-sa.json
+                project: ${{ secrets.DBT_GCP_PROJECT_ID }}
+                dataset: taxi_raw
+                location: EU
+                threads: 4
+          YAML
+
       - name: dbt debug
         run: dbt debug
 
