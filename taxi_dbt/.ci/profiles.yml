@@ -1,0 +1,13 @@
+taxi_dbt:
+  outputs:
+    ci:
+      dataset: taxi_raw
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      location: EU
+      method: oauth
+      priority: interactive
+      project: astrafy-de-proj
+      threads: 4
+      type: bigquery
+  target: ci
