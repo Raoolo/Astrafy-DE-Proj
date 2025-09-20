@@ -33,6 +33,7 @@ resource "google_bigquery_dataset_iam_member" "bq_transfer_dataset_owner" {
   member     = "serviceAccount:${google_service_account.bq_transfer.email}"
 }
 
+#
 resource "google_storage_bucket" "raw" {
   name                        = var.gcs_bucket_name
   location                    = var.region
