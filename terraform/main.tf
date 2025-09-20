@@ -52,6 +52,12 @@ resource "google_bigquery_dataset" "raw" {
   delete_contents_on_destroy = true
 }
 
+resource "google_data_catalog_taxonomy" "security_taxonomy" {
+  display_name = "Security"
+  description  = "Policy tags for fine-grained access to columns"
+  region       = "us"
+}
+
 resource "google_bigquery_table" "weather_daily" {
   dataset_id = google_bigquery_dataset.raw.dataset_id
   table_id   = "weather_daily"
