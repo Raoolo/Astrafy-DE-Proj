@@ -31,3 +31,9 @@ variable "weather_schedule" {
   type        = string
   default     = "every 24 hours"
 }
+
+variable "policytag_readers" {
+  description = "Principals allowed to read columns tagged as sensitive"
+  type        = list(string)
+  default     = []
+}

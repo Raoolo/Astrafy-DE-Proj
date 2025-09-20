@@ -58,6 +58,23 @@ resource "google_data_catalog_taxonomy" "security_taxonomy" {
   region       = "us"
 }
 
+resource "google_data_catalog_policy_tag" "pt_payment_type" {
+  taxonomy     = google_data_catalog_taxonomy.security_taxonomy.name
+  display_name = "SENSITIVE_PAYMENT"
+  description  = "Payment method details"
+}
+
+resource "google_data_catalog_policy_tag_iam_binding" "pt_payment_type_reader" {
+  policy_tag = google_data_catalog_policy_tag.pt_payment_type.name
+  role       = "roles/datacatalog.categoryFineGrainedReader"
+  members     = var.policytag_readers
+}
+
+# to delete
+output "payment_type_policy_tag_name" {
+  value = google_data_catalog_policy_tag.pt_payment_type.name
+}
+
 resource "google_bigquery_table" "weather_daily" {
   dataset_id = google_bigquery_dataset.raw.dataset_id
   table_id   = "weather_daily"
