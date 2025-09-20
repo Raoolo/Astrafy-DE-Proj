@@ -67,7 +67,7 @@ resource "google_data_catalog_policy_tag" "pt_payment_type" {
 resource "google_data_catalog_policy_tag_iam_binding" "pt_payment_type_reader" {
   policy_tag = google_data_catalog_policy_tag.pt_payment_type.name
   role       = "roles/datacatalog.categoryFineGrainedReader"
-  members     = var.policytag_readers
+  members    = var.policytag_readers
 }
 
 # to delete
