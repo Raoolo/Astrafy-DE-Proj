@@ -39,3 +39,5 @@ select
 from by_day d
 left join day_weather w using (trip_date)
 order by d.trip_date
+
+-- test
