@@ -12,3 +12,11 @@ sources:
     schema: taxi_raw
     tables:
       - name: weather_daily
+
+models:
+  - name: stg_taxi_trips
+    columns:
+      - name: payment_type
+        description: "Payment method restricted"
+        policy_tags:
+          - "projects/astrafy-de-proj/locations/us/taxonomies/5135790950545886483/policyTags/6936652355803825522"

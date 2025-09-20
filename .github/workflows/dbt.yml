@@ -50,7 +50,7 @@ jobs:
                 keyfile: /home/runner/dbt-sa.json
                 project: ${{ secrets.DBT_GCP_PROJECT_ID }}
                 dataset: taxi_raw
-                location: EU
+                location: US
                 threads: 4
           YAML
 

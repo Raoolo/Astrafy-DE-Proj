@@ -6,7 +6,7 @@ variable "project_id" {
 variable "region" {
   description = "Default region for resources"
   type        = string
-  default     = "europe-west12"
+  default     = "us-central1"
 }
 
 variable "gcs_bucket_name" {

@@ -5,7 +5,7 @@ taxi_dbt:
       dataset: taxi_raw
       job_execution_timeout_seconds: 300
       job_retries: 1
-      location: EU
+      location: US
       method: oauth
       priority: interactive
       project: astrafy-de-proj
