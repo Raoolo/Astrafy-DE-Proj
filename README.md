@@ -1,29 +1,15 @@
-# Mini Data Pipeline (Terraform + GCS + BigQuery + dbt)
+# Chicago Taxi Trips – Weather Impact Analysis
 
-A pipeline that lands a CSV in **GCS**, loads it to **BigQuery**, and transforms it with **dbt**. Infra is managed by **Terraform**. CI runs on **GitHub Actions**.
+This project want to reproduce an **end-to-end pipeline** on GCP to answer the following question posed by the city of Chicago:
 
----
+> **Do weather conditions affect taxi trip duration?**
 
-## Architecture (high level)
+👉 [View the Looker Studio Dashboard](https://lookerstudio.google.com/s/vFsFpj5EHWE)
 
-```mermaid
-flowchart TB
-    subgraph Local_Dev["Local Dev / CI"]
-      T[Terraform] -->|creates| BQDS[(BigQuery Dataset)]
-      T -->|creates| GCS[(GCS Bucket)]
-      DBT[dbt build] -->|reads/writes| BQ[(BigQuery)]
-    end
+## Mini Data Pipeline (Terraform + GCS + BigQuery + dbt)
 
-    subgraph GCP
-      GCS ---|raw CSV| LOAD[bq load job]
-      LOAD -->|table| RAW[(taxi_raw.taxi_trips)]
-      DBT_MODEL[[dbt model: taxi_trips_clean]] --> CURATED[(taxi_raw.taxi_trips_clean)]
-      RAW --> DBT_MODEL
-    end
-
-    note1{{GitHub Actions}} -->|plan/apply| T
-    note2{{GitHub Actions}} -->|dbt build| DBT
-```
+All resources are created via **Terraform**, data transformations are done with **dbt**, and results are presented in a **Looker Studio dashboard**. Infrastructure is managed through **Terraform**, and CI/CD through **GitHub Actions**.
+The repo includes infrastructure-as-code, transformations and CI/CD pipelines. The data is hosted on the public dataset of BigQuery.
 
 ---
 
@@ -31,45 +17,88 @@ flowchart TB
 
 ```pgsql
 .
-├─ terraform/           # IaC for BigQuery dataset + GCS bucket
-│  ├─ providers.tf
-│  ├─ variables.tf
-│  ├─ main.tf
-│  └─ terraform.tfvars  # (local only, not committed)
-├─ taxi_dbt/            # dbt project
-│  ├─ models/
-│  │  ├─ test.sql
-│  │  └─ taxi_trips_clean.sql
-│  └─ dbt_project.yml
-└─ .github/workflows/
-   ├─ terraform.yml     # plan on PR, apply on main
-   └─ dbt.yml           # dbt build on push/PR
+├─ terraform/ # Infrastructure (GCP resources via Terraform)
+│ ├─ providers.tf
+│ ├─ variables.tf
+│ ├─ main.tf
+│ └─ outputs.tf
+├─ taxi_dbt/ # dbt project (models + transformations)
+│ ├─ models/
+│ │ ├─ sources.yml
+│ │ ├─ stg_taxi_trips.sql
+│ │ └─ mart_taxi_weather_daily.sql
+│ └─ dbt_project.yml
+└─ .github/workflows/ # CI/CD pipelines (GitHub Actions)
+├─ terraform.yml
+└─ dbt.yml
 ```
+---
 
-## Run locally
+## Pipeline Overview
 
-### Auth & enable APIs (once)
+### 1. **Infrastructure (Terraform)**
+- Creates a **BigQuery dataset** (`taxi_raw`).
+- Creates a **partitioned BigQuery table** `weather_daily`.
+- Configures a **BigQuery Scheduled Query** that:
+  - Backfills all weather data since 2023-06-01.
+  - Runs **daily** to ingest yesterday’s weather.
+- Applies **column-level security** to the `payment_type` field with a Data Catalog policy tag (only my email has access).
+
+### 2. **Data Transformation (dbt)**
+- `stg_taxi_trips`: filters Chicago Taxi Trips public dataset to **01/06/2023 – 31/12/2023**.
+- `mart_taxi_weather_daily`: joins trips with weather, computes daily averages, and rounds to 1 decimal place.
+
+### 3. **CI/CD**
+- **Terraform workflow**: validates and plans on PRs, applies when merged into `main`.  
+- **dbt workflow**: runs `dbt build` on pushes to validate models against BigQuery.
+
+### 4. **Dashboard (Looker Studio)**
+- Connected directly to `mart_taxi_weather_daily`.
+- Shows:
+  - **Trend line**: trip duration vs temperature over time.
+  - **Scatter plot**: temperature vs average trip minutes.
+  - **Rainy vs dry comparison**: average duration by precipitation category.
+
+---
+
+## Key Insight
+
+Trips last slightly longer on rainy days, and we can also see that trips duration seems to be higher on colder days and viceversa, decreasing durring summer. This suggests that weather indeed has a measurable effect on taxi's trip duration, with warmer days probably favoring other forms of transport such as walking or cycling.
+
+
+---
+
+## How to Reproduce
+
+### Prerequisites
+- GCP project + billing enabled.
+- Terraform (`>=1.6`), `gcloud` CLI, `dbt-bigquery` installed.
+- GitHub repo with Actions enabled.
+
+1. Clone repo & authenticate
 ```powershell
 gcloud auth application-default login
 gcloud config set project astrafy-de-proj
-gcloud services enable bigquery.googleapis.com storage.googleapis.com
 ```
 
-### Terraform for infrastructure
+2. Terraform for infrastructure
 ```powershell
 cd terraform
 terraform init
 terraform apply -auto-approve
 ```
 
-### Put sample data
-```powershell
-gsutil cp .\taxi_sample.csv gs://<BUCKET>/raw/taxi_sample.csv
-bq load --autodetect --source_format=CSV <PROJECT_ID>:taxi_raw.taxi_trips gs://<BUCKET>/raw/taxi_sample.csv
-```
-
-### dbt for transformations
+3. Run dbt locally
 ```powershell
 cd taxi_dbt
 dbt build
 ```
+
+4. dbt for transformations
+```powershell
+cd taxi_dbt
+dbt build
+```
+
+5. Open the Looker Studio Dashboard
+[View the Looker Studio Dashboard](https://lookerstudio.google.com/s/vFsFpj5EHWE)
