@@ -35,9 +35,14 @@ select
   round(w.temp_max_c, 1) 	as temp_max_c,
   round(w.wind_max, 1) 		as wind_max,
   round(w.wind_avg, 1)		as wind_avg,
-  round(w.prcp_mm, 1) 		as prcp_mm
+  round(w.prcp_mm, 1) 		as prcp_mm,
+  case
+    when w.temp_avg_c < 0 then 'Freezing'
+    when w.temp_avg_c between 0 and 10 then 'Cold'
+    when w.temp_avg_c between 10 and 20 then 'Mild'
+    when w.temp_avg_c between 20 and 25 then 'Warm'
+    else 'Hot'
+  end as temp_bucket
 from by_day d
 left join day_weather w using (trip_date)
 order by d.trip_date
-
--- test
