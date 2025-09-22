@@ -1,8 +1,3 @@
-resource "google_project_service" "storage" {
-  project = var.project_id
-  service = "storage.googleapis.com"
-}
-
 resource "google_project_service" "bigquery_datatransfer" {
   project = var.project_id
   service = "bigquerydatatransfer.googleapis.com"
@@ -31,20 +26,6 @@ resource "google_bigquery_dataset_iam_member" "bq_transfer_dataset_owner" {
   dataset_id = google_bigquery_dataset.raw.dataset_id
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${google_service_account.bq_transfer.email}"
-}
-
-#
-resource "google_storage_bucket" "raw" {
-  name                        = var.gcs_bucket_name
-  location                    = var.region
-  uniform_bucket_level_access = true
-  force_destroy               = true
-
-  versioning {
-    enabled = true
-  }
-
-  depends_on = [google_project_service.storage]
 }
 
 resource "google_bigquery_dataset" "raw" {
