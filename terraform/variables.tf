@@ -37,3 +37,21 @@ variable "policytag_readers" {
   type        = list(string)
   default     = []
 }
+
+variable "viewer_user_emails" {
+  description = "Individual users who can view dataset & run jobs"
+  type        = list(string)
+  default     = [] # e.g. ["gatto.raulo@gmail.com"]
+}
+
+variable "viewer_groups" {
+  description = "Google Groups who can view dataset & run jobs"
+  type        = list(string)
+  default     = [] # e.g. ["founders@astrafy.io"]
+}
+
+variable "dbt_tag_users" {
+  description = "Principals allowed to attach policy tags (users and/or service accounts)"
+  type        = list(string)
+  default     = ["user:gatto.raul04@gmail.com", "serviceAccount:dbt-cicd@astrafy-de-proj.iam.gserviceaccount.com"]
+}

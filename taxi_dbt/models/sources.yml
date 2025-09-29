@@ -19,4 +19,11 @@ models:
       - name: payment_type
         description: "Payment method restricted"
         policy_tags:
-          - "projects/astrafy-de-proj/locations/us/taxonomies/5135790950545886483/policyTags/6936652355803825522"
+          - "projects/astrafy-de-proj/locations/us/taxonomies/1235097667442812274/policyTags/3646676748629626383"
+
+  - name: mart_taxi_weather_daily
+    columns:
+      - name: payment_type
+        description: "Payment method restricted"
+        policy_tags:
+          - "projects/astrafy-de-proj/locations/us/taxonomies/1235097667442812274/policyTags/3646676748629626383"

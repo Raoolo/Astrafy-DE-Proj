@@ -1,0 +1,55 @@
+[
+  {
+    "name": "trip_date",
+    "type": "DATE"
+  },
+  {
+    "name": "trips",
+    "type": "INTEGER"
+  },
+  {
+    "name": "payment_type",
+    "type": "STRING",
+    "policyTags": {
+      "names": [
+      "projects/astrafy-de-proj/locations/us/taxonomies/1235097667442812274/policyTags/3646676748629626383"
+      ]
+    }
+  },
+  {
+    "name": "avg_trip_minutes",
+    "type": "FLOAT"
+  },
+  {
+    "name": "avg_trip_kms",
+    "type": "FLOAT"
+  },
+  {
+    "name": "temp_avg_c",
+    "type": "FLOAT"
+  },
+  {
+    "name": "temp_min_c",
+    "type": "FLOAT"
+  },
+  {
+    "name": "temp_max_c",
+    "type": "FLOAT"
+  },
+  {
+    "name": "wind_max",
+    "type": "FLOAT"
+  },
+  {
+    "name": "wind_avg",
+    "type": "FLOAT"
+  },
+  {
+    "name": "prcp_mm",
+    "type": "FLOAT"
+  },
+  {
+    "name": "temp_bucket",
+    "type": "STRING"
+  }
+]

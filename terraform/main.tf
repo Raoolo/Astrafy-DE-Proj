@@ -1,3 +1,9 @@
+locals {
+  viewer_user_members  = [for e in var.viewer_user_emails : "user:${e}"]
+  viewer_group_members = [for g in var.viewer_groups : "group:${g}"]
+  viewer_members       = concat(local.viewer_user_members, local.viewer_group_members)
+}
+
 resource "google_project_service" "storage" {
   project            = var.project_id
   service            = "storage.googleapis.com"
@@ -41,6 +47,18 @@ resource "google_bigquery_dataset" "raw" {
   delete_contents_on_destroy = true
 }
 
+resource "google_bigquery_dataset_iam_binding" "dataset_viewers" {
+  dataset_id = google_bigquery_dataset.raw.dataset_id
+  role       = "roles/bigquery.dataViewer"
+  members    = local.viewer_members
+}
+
+resource "google_project_iam_binding" "project_job_users" {
+  project = var.project_id
+  role    = "roles/bigquery.jobUser"
+  members = local.viewer_members
+}
+
 resource "google_data_catalog_taxonomy" "security_taxonomy" {
   display_name = "Security"
   description  = "Policy tags for fine-grained access to columns"
@@ -53,13 +71,22 @@ resource "google_data_catalog_policy_tag" "pt_payment_type" {
   description  = "Payment method details"
 }
 
+resource "google_data_catalog_taxonomy_iam_binding" "taxonomy_admin_for_dbt" {
+  taxonomy = google_data_catalog_taxonomy.security_taxonomy.name
+  role     = "roles/datacatalog.categoryAdmin"
+  members = [
+    "user:gatto.raul04@gmail.com",
+  "serviceAccount:dbt-cicd@astrafy-de-proj.iam.gserviceaccount.com"]
+}
+
 resource "google_data_catalog_policy_tag_iam_binding" "pt_payment_type_reader" {
   policy_tag = google_data_catalog_policy_tag.pt_payment_type.name
   role       = "roles/datacatalog.categoryFineGrainedReader"
-  members    = var.policytag_readers
+  members = [
+    "user:gatto.raul04@gmail.com"
+  ]
 }
 
-# to delete
 output "payment_type_policy_tag_name" {
   value = google_data_catalog_policy_tag.pt_payment_type.name
 }

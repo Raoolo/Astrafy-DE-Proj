@@ -1,18 +1,21 @@
+{{ config(materialized='table') }}
 with trip_info as (
   select
     trip_date,
     trip_minutes,
-    trip_miles * 1.6 as trip_kms
+    trip_miles * 1.6 as trip_kms,
+    payment_type
   from {{ ref('stg_taxi_trips') }}
 ),
 by_day as (
   select
     trip_date,
+    payment_type,
     avg(trip_minutes) as avg_trip_minutes,
     avg(trip_kms)     as avg_trip_kms,
     count(*)          as trips
   from trip_info
-  group by trip_date
+  group by trip_date, payment_type
 ),
 day_weather as (
   select
@@ -28,6 +31,7 @@ day_weather as (
 select
   d.trip_date,
   d.trips,
+  d.payment_type as payment_type,
   round(d.avg_trip_minutes, 1) 	as avg_trip_minutes,
   round(d.avg_trip_kms,   1) 	as avg_trip_kms,
   round(w.temp_avg_c, 1) 	as temp_avg_c,

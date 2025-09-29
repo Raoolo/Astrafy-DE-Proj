@@ -1,0 +1,87 @@
+[
+  {
+    "name": "unique_key",
+    "type": "STRING"
+  },
+  {
+    "name": "taxi_id",
+    "type": "STRING"
+  },
+  {
+    "name": "trip_start_timestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "trip_end_timestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "trip_seconds",
+    "type": "INTEGER"
+  },
+  {
+    "name": "trip_miles",
+    "type": "FLOAT"
+  },
+  {
+    "name": "pickup_community_area",
+    "type": "INTEGER"
+  },
+  {
+    "name": "dropoff_community_area",
+    "type": "INTEGER"
+  },
+  {
+    "name": "pickup_census_tract",
+    "type": "INTEGER"
+  },
+  {
+    "name": "dropoff_census_tract",
+    "type": "INTEGER"
+  },
+  {
+    "name": "payment_type",
+    "type": "STRING",
+    "policyTags": {
+      "names": [
+      "projects/astrafy-de-proj/locations/us/taxonomies/1235097667442812274/policyTags/3646676748629626383"
+    ]
+    }
+  },
+  {
+    "name": "company",
+    "type": "STRING"
+  },
+  {
+    "name": "pickup_latitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "pickup_longitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "pickup_location",
+    "type": "STRING"
+  },
+  {
+    "name": "dropoff_latitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "dropoff_longitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "dropoff_location",
+    "type": "STRING"
+  },
+  {
+    "name": "trip_date",
+    "type": "DATE"
+  },
+  {
+    "name": "trip_minutes",
+    "type": "FLOAT"
+  }
+]
