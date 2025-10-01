@@ -22,6 +22,12 @@ resource "google_project_iam_member" "bq_transfer_job_user" {
   member  = "serviceAccount:${google_service_account.bq_transfer.email}"
 }
 
+resource "google_bigquery_dataset" "raw" {
+  dataset_id                 = var.bq_dataset_id
+  location                   = var.bq_location
+  delete_contents_on_destroy = true
+}
+
 resource "google_project_iam_member" "bq_transfer_user" {
   project = var.project_id
   role    = "roles/bigquery.user"
@@ -33,12 +39,6 @@ resource "google_bigquery_dataset_iam_member" "bq_transfer_dataset_owner" {
   dataset_id = google_bigquery_dataset.raw.dataset_id
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${google_service_account.bq_transfer.email}"
-}
-
-resource "google_bigquery_dataset" "raw" {
-  dataset_id                 = var.bq_dataset_id
-  location                   = var.bq_location
-  delete_contents_on_destroy = true
 }
 
 resource "google_data_catalog_taxonomy" "security_taxonomy" {
@@ -74,7 +74,7 @@ resource "google_bigquery_table" "weather_daily" {
     type  = "DAY"
     field = "weather_date"
   }
-
+ 
   schema = jsonencode([
     { name = "weather_date", type = "DATE", mode = "REQUIRED" },
     { name = "station_id", type = "STRING", mode = "REQUIRED" },
